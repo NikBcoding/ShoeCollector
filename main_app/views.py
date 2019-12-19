@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from django.views.generic.edit import CreateView
 from .models import Shoe
+
 # Add the following import
 
 # Define the home view
@@ -21,3 +23,7 @@ def shoes_detail(request, shoe_id):
     return render(request, 'shoes/detail.html', {
         'shoe': shoe
     })
+
+class ShoeCreate(CreateView):
+    model = Shoe
+    fields = '__all__'
