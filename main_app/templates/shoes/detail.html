@@ -3,19 +3,57 @@
 
 <h1>Shoe Details</h1>
 
-  <div class="card">
-    <div class="card-content">
+<div class="row">
+  <div class="col s6">
+    <div class="card">
+      <div class="card-content">
         <span class="card-title">{{ shoe.brand }}</span>
         <p>Name: {{ shoe.name }}</p>
         <p>Type: {{ shoe.style }}</p>
         <p>Description: {{ shoe.description }}</p>
-    </div>
+      </div>
 
-    <div class="card-action">
-      <a href="{% url 'shoes_update' shoe.id %}">Edit</a>
-      <a href="{% url 'shoes_delete' shoe.id %}">Delete</a>
+        <div class="card-action">
+          <a href="{% url 'shoes_update' shoe.id %}">Edit</a>
+          <a href="{% url 'shoes_delete' shoe.id %}">Delete</a>
+        </div>
+  
     </div>
-
   </div>
+  <div class="col s6">
+    <form action="{% url 'add_cleaning' shoe.id %}" method="post">
+      {% csrf_token %}
+      {{ cleaning_form.as_p }}
+      <input type="submit" value="Add Cleaning" class="btn">
+    </form>
+      <table class="striped">
+        <thead>
+          <tr><th>Date</th><th>Time</th></tr>
+        </thead>
+        <tbody>
+          {% for cleaning in shoe.cleaning_set.all %}
+            <tr>
+              <td>{{cleaning.date}}</td>
+              <td>{{cleaning.get_time_display}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+</div>
+
+<script>
+var dateEl = document.getElementById('id_date');
+  M.Datepicker.init(dateEl, {
+    format: 'yyyy-mm-dd',
+    defaultDate: new Date(),
+    setDefaultDate: true,
+    autoClose: true
+  });
+
+  var selectEl = document.getElementById('id_time')
+  M.FormSelect.init(selectEl);
+</script>
 
 {% endblock %}
