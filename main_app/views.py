@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .models import Shoe
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Shoe, Store
 from .forms import CleaningForm
 
 # Add the following import
@@ -29,11 +29,11 @@ def shoes_detail(request, shoe_id):
 
 class ShoeCreate(CreateView):
     model = Shoe
-    fields = '__all__'
+    fields = ['brand', 'name', 'style', 'description']
 
 class ShoeUpdate(UpdateView):
     model = Shoe
-    fields = '__all__'
+    fields = ['brand', 'name', 'style', 'description']
     # "if you want specific fields to be updated"
     # fields = ['brand','name', 'style', 'description']
 
@@ -49,3 +49,30 @@ def add_cleaning(request, shoe_id):
         new_cleaning.shoe_id = shoe_id
         new_cleaning.save()
     return redirect('detail', shoe_id=shoe_id)
+
+
+def assoc_store(request, shoe_id, store_id):
+  Shoe.objects.get(id=shoe_id).store.add(store_id)
+  return redirect('detail', shoe_id=shoe_id)
+
+def unassoc_store(request, shoe_id, store_id):
+  Shoe.objects.get(id=shoe_id).store.remove(store_id)
+  return redirect('detail', shoe_id=shoe_id)
+
+class StoreList(ListView):
+  model = Store
+
+class StoreDetail(DetailView):
+  model = Store
+
+class StoreCreate(CreateView):
+  model = Store
+  fields = '__all__'
+
+class StoreUpdate(UpdateView):
+  model = Store
+  fields = ['name', 'location']
+
+class StoreDelete(DeleteView):
+  model = Store
+  success_url = '/stores/'

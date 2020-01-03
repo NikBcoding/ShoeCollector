@@ -43,6 +43,24 @@
 
 </div>
 
+<hr>
+<div class="row">
+  <div class="col s6">
+    <h3>{{ shoe.brand }}'s Store</h3>
+    {% if shoe.stores.count %}
+      {% for store in shoe.stores.all %}
+        <div class="card">
+          <div class="card-content">
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <h5>No Stores :(</h5>
+    {% endif %}
+  </div>
+  <!-- Available toys will come after this line -->
+</div>
+
 <script>
 var dateEl = document.getElementById('id_date');
   M.Datepicker.init(dateEl, {

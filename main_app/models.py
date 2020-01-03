@@ -14,6 +14,16 @@ TIME = (
     ('5', '5:00pm')
 )
 
+class Store(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('store_detail', kwargs={'pk': self.id})
+
 
 # Create your models here.
 class Shoe(models.Model):
@@ -21,6 +31,7 @@ class Shoe(models.Model):
     name = models.CharField(max_length=50)
     style = models.CharField(max_length=50)
     description = models.TextField(max_length=200)
+    stores = models.ManyToManyField(Store)
         
     def __str__(self):
         return self.brand
@@ -40,3 +51,6 @@ class Cleaning(models.Model):
 
     def __str__(self):
         return f"{self.get_time_display()} on {self.date}"
+
+    class Meta:
+        ordering = ['-date']
