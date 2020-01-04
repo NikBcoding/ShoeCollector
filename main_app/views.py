@@ -22,9 +22,11 @@ def shoes_index(request):
 def shoes_detail(request, shoe_id):
     shoe = Shoe.objects.get(id=shoe_id)
     cleaning_form = CleaningForm()
+    stores_shoe_doesnt_have = Store.objects.exclude(id__in = shoe.stores.all().values_list('id'))
     return render(request, 'shoes/detail.html', {
         'shoe': shoe,
-        'cleaning_form': cleaning_form
+        'cleaning_form': cleaning_form,
+        'stores': stores_shoe_doesnt_have
     })
 
 class ShoeCreate(CreateView):
@@ -56,7 +58,7 @@ def assoc_store(request, shoe_id, store_id):
   return redirect('detail', shoe_id=shoe_id)
 
 def unassoc_store(request, shoe_id, store_id):
-  Shoe.objects.get(id=shoe_id).store.remove(store_id)
+  Shoe.objects.get(id=shoe_id).stores.remove(store_id)
   return redirect('detail', shoe_id=shoe_id)
 
 class StoreList(ListView):
@@ -67,7 +69,7 @@ class StoreDetail(DetailView):
 
 class StoreCreate(CreateView):
   model = Store
-  fields = '__all__'
+  fields = ['name', 'location']
 
 class StoreUpdate(UpdateView):
   model = Store
@@ -76,3 +78,8 @@ class StoreUpdate(UpdateView):
 class StoreDelete(DeleteView):
   model = Store
   success_url = '/stores/'
+
+def assoc_store(request, shoe_id, store_id):
+  shoe = Shoe.objects.get(id=shoe_id)
+  shoe.stores.add(store_id)
+  return redirect(shoe)
